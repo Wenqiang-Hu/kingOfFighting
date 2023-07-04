@@ -41,3 +41,7 @@ let AC_GAME_OBJECT_FRAME = (timestamp) => {
 
 }
 requestAnimationFrame(AC_GAME_OBJECT_FRAME);
+
+export {
+    AcGameObject
+}
