@@ -1,4 +1,6 @@
 import  { AcGameObject }  from '/static/js/ac_game_object/AcGameObject.js';
+// import { Controller } from '../controller/base.js';
+
 
 export class Player extends AcGameObject{
     constructor(root, info){
@@ -16,19 +18,25 @@ export class Player extends AcGameObject{
         this.vy = 0;
 
         this.speedx = 400; // horizontal moving speed
-        this.speedy = 1000; // vertical moving speed
-        
+        this.speedy = -1000; // vertical moving speed
+
         this.direction = 1;
         this.gravity = 50;
 
         this.ctx = this.root.game_map.ctx;
+
+        this.status = 3; // 0: idle, 1: move left, 2: move right, 3: jump, 
+                        // 4: attack, 5: under attack, 6: defeat 
+
+        this.pressed_keys = this.root.game_map.controller.pressed_keys;
+        
     }
 
     start(){
 
     }
 
-    move(){
+    update_move(){
         this.vy += this.gravity;
 
         this.x += this.vx * this.timeDelta / 1000;
@@ -37,11 +45,59 @@ export class Player extends AcGameObject{
         if (this.y > 450){
             this.y = 450;
             this.vy = 0;
+            this.status = 0;
+        }
+
+        if (this.x < 0){
+            this.x = 0;
+        } else if (this.x + this.width > this.root.game_map.$canvas.width()){
+            this.x = this.root.game_map.$canvas.width() - this.width;
         }
     }
 
+    update_control(){
+        console.log(this.pressed_keys)
+        let w, a, d, space;
+        if (this.id === 0){
+            w = this.pressed_keys.has("w");
+            a = this.pressed_keys.has("a");
+            d = this.pressed_keys.has("d");
+            space = this.pressed_keys.has(" ");
+        } else {
+            w = this.pressed_keys.has("ArrowUp");
+            a = this.pressed_keys.has("ArrowLeft");
+            d = this.pressed_keys.has("ArrowRight");
+            space = this.pressed_keys.has("Enter");
+        }
+
+        if (this.status === 0 || this.status === 1) {
+            if (w) {
+                if (a) {
+                    this.vx = -this.speedx;
+                } else if (d) {
+                    this.vx = this.speedx;
+                } else{
+                    this.vx = 0;
+                }
+                this.vy = this.speedy;
+                this.status = 3;
+            } else if (a) {
+                this.vx = -this.speedx;
+                this.status = 1;
+            } else if (d) {
+                this.vx = this.speedx;
+                this.status = 1;
+            } else {
+                this.vx = 0;
+                this.status = 0;
+            }
+        }
+
+    }
+
     update(){
-        this.move();
+        this.update_move();
+        this.update_control();
         this.render();
     }
 
