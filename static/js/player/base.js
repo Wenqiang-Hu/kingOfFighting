@@ -30,6 +30,8 @@ export class Player extends AcGameObject{
 
         this.pressed_keys = this.root.game_map.controller.pressed_keys;
         
+        this.animations = new Map();
+        this.frame_current_cnt = 0;
     }
 
     start(){
@@ -56,7 +58,7 @@ export class Player extends AcGameObject{
     }
 
     update_control(){
-        console.log(this.pressed_keys)
+
         let w, a, d, space;
         if (this.id === 0){
             w = this.pressed_keys.has("w");
@@ -102,7 +104,17 @@ export class Player extends AcGameObject{
     }
 
     render(){
-        this.ctx.fillStyle = this.color;
-        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        // this.ctx.fillStyle = this.color;
+        // this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        let status = this.status;
+
+        let obj = this.animations.get(status);
+        if (obj && obj.loaded) {
+            let k = parseInt(this.frame_current_cnt / obj.frame_rate) % obj.frame_cnt;
+            let image = obj.gif.frames[k].image;
+            this.ctx.drawImage(image, this.x, this.y + obj.offset_y, image.width * obj.scale, image.height * obj.scale)
+
+        }
+        this.frame_current_cnt++;
     }
 }
