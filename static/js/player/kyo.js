@@ -10,7 +10,7 @@ export class Kyo extends Player {
 
     init_animations(){
         let outer = this;
-        let offset = [0, -22, -22, 0, 0, 0, 0]
+        let offset = [0, -22, -22, -140, 0, 0, 0]
         for (let i = 0; i < 7; i ++) {
             let gif = GIF();
             gif.load(`/static/images/player/kyo/${i}.gif`);
@@ -27,6 +27,14 @@ export class Kyo extends Player {
                 let obj = outer.animations.get(i);
                 obj.frame_cnt = gif.frames.length;
                 obj.loaded = true;
+
+                if (i === 3) {
+                    obj.frame_rate = 4;
+                }
+
+                if (i === 4) {
+                    obj.frame_rate = 7;
+                }
 
             }
         }

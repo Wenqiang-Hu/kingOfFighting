@@ -73,7 +73,11 @@ export class Player extends AcGameObject{
         }
 
         if (this.status === 0 || this.status === 1) {
-            if (w) {
+            if (space) {
+                this.status = 4;
+                this.vx = 0;
+                // this.frame_current_cnt = 0;
+            } else if (w) {
                 if (a) {
                     this.vx = -this.speedx;
                 } else if (d) {
@@ -83,6 +87,7 @@ export class Player extends AcGameObject{
                 }
                 this.vy = this.speedy;
                 this.status = 3;
+                this.frame_current_cnt = 0;
             } else if (a) {
                 this.vx = -this.speedx;
                 this.status = 1;
@@ -107,13 +112,21 @@ export class Player extends AcGameObject{
         // this.ctx.fillStyle = this.color;
         // this.ctx.fillRect(this.x, this.y, this.width, this.height);
         let status = this.status;
+        
+        if (status == 1 && this.direction * this.vx < 0) status = 2;
 
         let obj = this.animations.get(status);
         if (obj && obj.loaded) {
             let k = parseInt(this.frame_current_cnt / obj.frame_rate) % obj.frame_cnt;
             let image = obj.gif.frames[k].image;
-            this.ctx.drawImage(image, this.x, this.y + obj.offset_y, image.width * obj.scale, image.height * obj.scale)
+            this.ctx.drawImage(image, this.x, this.y + obj.offset_y, image.width * obj.scale, image.height * obj.scale);
 
+        }
+
+        if (status === 4) {
+            if (this.frame_current_cnt === obj.frame_rate * (obj.frame_cnt - 1)) {
+                this.status = 0;
+            }
         }
         this.frame_current_cnt++;
     }
