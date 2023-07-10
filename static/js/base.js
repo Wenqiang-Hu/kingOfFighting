@@ -2,8 +2,8 @@ import { GameMap } from '/static/js/game_map/base.js';
 import { Kyo } from '/static/js/player/kyo.js';
 
 class KOF {
-    constructor(id){
-        this.$kof = $("#" + id);
+    constructor(id) {
+        this.$kof = $('#' + id);
 
         this.game_map = new GameMap(this);
         this.players = [
@@ -22,11 +22,12 @@ class KOF {
                 width: 120,
                 height: 200,
                 color: 'red',
-            })
-        ]
+            }),
+        ];
     }
 }
 
+
 export {
     KOF
-};
+}
